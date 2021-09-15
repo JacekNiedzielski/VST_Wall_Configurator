@@ -44,9 +44,10 @@ class Main(QMainWindow):
     def toolBar(self):
         self.tb=self.addToolBar("Tool Bar")
         self.tb.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.tb.setIconSize(QSize(144, 108))
         #######################   Toolbar Buttons ########################
         #######################   Add Product     ########################
-        self.addProduct=QAction(QIcon('icons/add.png'), "Add Product", self)
+        self.addProduct=QAction(QIcon('icons/Add_VST.png'), "Add Product", self)
         self.tb.addAction(self.addProduct)
         self.addProduct.triggered.connect(self.funcAddProduct)
         self.tb.addSeparator()
