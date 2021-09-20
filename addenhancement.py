@@ -10,11 +10,11 @@ con=sqlite3.connect("products.db")
 cur=con.cursor()
 defaultImg = "store.png"
 
-class AddMember(QWidget):
+class AddEnhancement(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Add Member")
-        self.setWindowIcon(QIcon("icons/ico.ico"))
+        self.setWindowTitle("Add Product's Enhancement")
+        self.setWindowIcon(QIcon("icons/Bautätigkeit_ohneHintergrund.png"))
         self.setGeometry(450,150,350,550)
         self.setFixedSize(self.size())
         self.UI()

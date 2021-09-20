@@ -11,6 +11,110 @@ con=sqlite3.connect("products.db")
 cur=con.cursor()
 defaultImg = "store.png"
 
+
+
+class AddProduct(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Add Product")
+        self.setWindowIcon(QIcon("icons/ico.ico"))
+        self.setGeometry(450,150,350,550)
+
+        self.UI()
+        self.show()
+
+
+    def UI(self):
+        self.widgets()
+        self.layouts()
+
+
+
+
+    def widgets(self):
+        ################### Widgets top layout ################
+        self.list_of_buttons = []
+        self.vstWallBtn = QPushButton("VST Wall")
+        self.list_of_buttons.append(self.vstWallBtn)
+        self.vstSlabBtn = QPushButton("VST Slab")
+        self.list_of_buttons.append(self.vstSlabBtn)
+        self.vstStairsBtn = QPushButton("VST Stairs")
+        self.list_of_buttons.append(self.vstStairsBtn)
+        self.vstColumnBtn = QPushButton("VST Column")
+        self.list_of_buttons.append(self.vstColumnBtn)
+        self.vstBeamBtn = QPushButton("VST Beam")
+        self.list_of_buttons.append(self.vstBeamBtn)
+        self.vstAirLightDuctBtn = QPushButton("VST Air/Light Duct")
+        self.list_of_buttons.append(self.vstAirLightDuctBtn)
+        self.vstRoofDormerBtn = QPushButton("VST Roof Dormer")
+        self.list_of_buttons.append(self.vstRoofDormerBtn)
+        self.vstFoundation = QPushButton("VST Foundation")
+        self.list_of_buttons.append(self.vstFoundation)
+
+
+
+
+
+    def layouts(self):
+        #Layouts and Frames
+        self.mainLayout = QVBoxLayout()
+        self.topFrame = QFrame()
+        self.bottomFrame = QFrame()
+        self.topLayout = QHBoxLayout()
+        self.bottomLayout = QHBoxLayout()
+        #Dependencies
+        self.topLayout.addWidget(self.vstWallBtn)
+        self.topLayout.addWidget(self.vstSlabBtn)
+        self.topLayout.addWidget(self.vstStairsBtn)
+        self.topLayout.addWidget(self.vstColumnBtn)
+        self.bottomLayout.addWidget(self.vstBeamBtn)
+        self.bottomLayout.addWidget(self.vstAirLightDuctBtn)
+        self.bottomLayout.addWidget(self.vstRoofDormerBtn)
+        self.bottomLayout.addWidget(self.vstFoundation)
+
+
+
+        self.topFrame.setLayout(self.topLayout)
+        self.bottomFrame.setLayout(self.bottomLayout)
+
+        self.mainLayout.addWidget(self.topFrame)
+        self.mainLayout.addWidget(self.bottomFrame)
+
+        self.setLayout(self.mainLayout)
+
+
+
+
+
+
+
+        """
+        self.img = QPixmap("icons/addproduct.png")
+        self.addProductImg.setPixmap(self.img)
+        self.titleText = QLabel("Add Product")
+        ################## Widgets of bottom layout ##########
+        self.nameEntry = QLineEdit()
+        self.nameEntry.setPlaceholderText("Enter name of product")
+        self.manufacturerEntry = QLineEdit()
+        self.manufacturerEntry.setPlaceholderText("Enter name of manufacturer")
+        self.priceEntry = QLineEdit()
+        self.priceEntry.setPlaceholderText("Enter price of product")
+        self.qoutaEntry = QLineEdit()
+        self.qoutaEntry.setPlaceholderText("Enter qouta of product")
+        self.uploadBtn = QPushButton("Upload")
+        self.uploadBtn.clicked.connect(self.uploadImg)
+        self.submitBtn = QPushButton("Submit")
+        self.submitBtn.clicked.connect(self.addProduct)
+        """
+
+
+
+
+"""
+
+
+
+
 class AddProduct(QWidget):
     def __init__(self):
         super().__init__()
@@ -20,10 +124,6 @@ class AddProduct(QWidget):
         self.setFixedSize(self.size())
         self.UI()
         self.show()
-
-    def closeEvent(self, event):
-        self.main = Main()
-
 
     def UI(self):
         self.widgets()
@@ -108,3 +208,5 @@ class AddProduct(QWidget):
         else:
             QMessageBox.information(self, "Info", "Fileds cannot be empty")
 
+
+"""

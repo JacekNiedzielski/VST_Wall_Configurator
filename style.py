@@ -125,5 +125,25 @@ def sellProductTopFrame():
      """
 
 
+def toolbarstyle():
+     return """
+     QToolBar{
+     
+     background-color: #C2BCB3;
+    
+     }
+     """
+
+
+     
+     
+     
+     
+     
+     
+  
+     
+
+
 
 
