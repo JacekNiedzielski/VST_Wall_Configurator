@@ -24,7 +24,7 @@ class Main(QMainWindow):
         self.setWindowTitle("Product Manager")
         self.setWindowIcon(QIcon("icons/vst.ico"))
         self.setGeometry(450, 150, 1350, 750)
-        # self.setFixedSize(self.size())
+        #self.setFixedSize(self.size())
         self.UI()
         self.show()
 

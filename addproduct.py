@@ -1,11 +1,17 @@
 import sys, os
+
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
+from PyQt5.QtCore import *
 import sqlite3
-from PIL import Image
-from main import Main
+import vst_beam, style
+from sellings import ConfirmWindow
 
+import inspect
+from PyQt5.QtCore import QCoreApplication
+
+from PIL import Image
 
 con=sqlite3.connect("products.db")
 cur=con.cursor()
@@ -18,8 +24,9 @@ class AddProduct(QWidget):
         super().__init__()
         self.setWindowTitle("Add Product")
         self.setWindowIcon(QIcon("icons/ico.ico"))
-        self.setGeometry(450,150,350,550)
-
+        self.setGeometry(450,150,500,550)
+        self.setFixedSize(self.size())
+        self.setStyleSheet("background-color:white")
         self.UI()
         self.show()
 
@@ -28,28 +35,59 @@ class AddProduct(QWidget):
         self.widgets()
         self.layouts()
 
-
-
-
     def widgets(self):
         ################### Widgets top layout ################
         self.list_of_buttons = []
+        #Walls
         self.vstWallBtn = QPushButton("VST Wall")
+        self.vstWallBtn.setStyleSheet(style.productsButtons())
+        self.vstWallBtnImage = QLabel()
+        self.vstWallBtnImage.setPixmap(QPixmap("icons/Wall_AddProduct_icon.jpg"))
         self.list_of_buttons.append(self.vstWallBtn)
+        #Slabs
         self.vstSlabBtn = QPushButton("VST Slab")
+        self.vstSlabBtn.setStyleSheet(style.productsButtons())
+        self.vstSlabBtnImage = QLabel()
+        self.vstSlabBtnImage.setPixmap(QPixmap("icons/Slab_AddProduct_icon.jpg"))
         self.list_of_buttons.append(self.vstSlabBtn)
+        #Stairs
         self.vstStairsBtn = QPushButton("VST Stairs")
+        self.vstStairsBtn.setStyleSheet(style.productsButtons())
+        self.vstStairsBtnImage = QLabel()
+        self.vstStairsBtnImage.setPixmap(QPixmap("icons/Stairs_AddProduct_icon.jpg"))
         self.list_of_buttons.append(self.vstStairsBtn)
+        #Columns
         self.vstColumnBtn = QPushButton("VST Column")
+        self.vstColumnBtn.setStyleSheet(style.productsButtons())
+        self.vstColumnBtnImage = QLabel()
+        self.vstColumnBtnImage.setPixmap(QPixmap("icons/Column_AddProduct_icon.png"))
         self.list_of_buttons.append(self.vstColumnBtn)
+        #Beams
         self.vstBeamBtn = QPushButton("VST Beam")
+        self.vstBeamBtn.setStyleSheet(style.productsButtons())
+        self.vstBeamBtnImage = QLabel()
+        self.vstBeamBtnImage.setPixmap(QPixmap("icons/Beam_AddProduct_icon.png"))
         self.list_of_buttons.append(self.vstBeamBtn)
+        self.vstBeamBtn.clicked.connect(self.funcAddBeam)
+
+        #Ducts
         self.vstAirLightDuctBtn = QPushButton("VST Air/Light Duct")
+        self.vstAirLightDuctBtn.setStyleSheet(style.productsButtons())
+        self.vstAirLightDuctBtnImage = QLabel()
+        self.vstAirLightDuctBtnImage.setPixmap(QPixmap("icons/Beam_AddProduct_icon.jpg"))
         self.list_of_buttons.append(self.vstAirLightDuctBtn)
+        #Roof dormers
         self.vstRoofDormerBtn = QPushButton("VST Roof Dormer")
+        self.vstRoofDormerBtn.setStyleSheet(style.productsButtons())
+        self.vstRoofDormerBtnImage = QLabel()
+        self.vstRoofDormerBtnImage.setPixmap(QPixmap("icons/Beam_AddProduct_icon.jpg"))
         self.list_of_buttons.append(self.vstRoofDormerBtn)
-        self.vstFoundation = QPushButton("VST Foundation")
-        self.list_of_buttons.append(self.vstFoundation)
+        #Foundations
+        self.vstFoundationBtn = QPushButton("VST Foundation")
+        self.vstFoundationBtn.setStyleSheet(style.productsButtons())
+        self.vstFoundationBtnImage = QLabel()
+        self.vstFoundationBtnImage.setPixmap(QPixmap("icons/Beam_AddProduct_icon.jpg"))
+        self.list_of_buttons.append(self.vstFoundationBtn)
 
 
 
@@ -62,17 +100,44 @@ class AddProduct(QWidget):
         self.bottomFrame = QFrame()
         self.topLayout = QHBoxLayout()
         self.bottomLayout = QHBoxLayout()
+        self.wallLayout = QVBoxLayout()
+        self.slabLayout = QVBoxLayout()
+        self.stairsLayout = QVBoxLayout()
+        self.columnLayout = QVBoxLayout()
+        self.beamLayout = QVBoxLayout()
+        self.ductLayout = QVBoxLayout()
+        self.roofdormerLayout = QVBoxLayout()
+        self.foundationLayout = QVBoxLayout()
+
         #Dependencies
-        self.topLayout.addWidget(self.vstWallBtn)
-        self.topLayout.addWidget(self.vstSlabBtn)
-        self.topLayout.addWidget(self.vstStairsBtn)
-        self.topLayout.addWidget(self.vstColumnBtn)
-        self.bottomLayout.addWidget(self.vstBeamBtn)
-        self.bottomLayout.addWidget(self.vstAirLightDuctBtn)
-        self.bottomLayout.addWidget(self.vstRoofDormerBtn)
-        self.bottomLayout.addWidget(self.vstFoundation)
+        self.wallLayout.addWidget(self.vstWallBtnImage)
+        self.wallLayout.addWidget(self.vstWallBtn)
+        self.slabLayout.addWidget(self.vstSlabBtnImage)
+        self.slabLayout.addWidget(self.vstSlabBtn)
+        self.stairsLayout.addWidget(self.vstStairsBtnImage)
+        self.stairsLayout.addWidget(self.vstStairsBtn)
+        self.columnLayout.addWidget(self.vstColumnBtnImage)
+        self.columnLayout.addWidget(self.vstColumnBtn)
+        self.beamLayout.addWidget(self.vstBeamBtnImage)
+        self.beamLayout.addWidget(self.vstBeamBtn)
+        self.ductLayout.addWidget(self.vstAirLightDuctBtnImage)
+        self.ductLayout.addWidget(self.vstAirLightDuctBtn)
+        self.roofdormerLayout.addWidget(self.vstRoofDormerBtnImage)
+        self.roofdormerLayout.addWidget(self.vstRoofDormerBtn)
+        self.foundationLayout.addWidget(self.vstFoundationBtnImage)
+        self.foundationLayout.addWidget(self.vstFoundationBtn)
 
 
+
+        self.topLayout.addLayout(self.wallLayout)
+        self.topLayout.addLayout(self.slabLayout)
+        self.topLayout.addLayout(self.stairsLayout)
+        self.topLayout.addLayout(self.columnLayout)
+
+        self.bottomLayout.addLayout(self.beamLayout)
+        self.bottomLayout.addLayout(self.ductLayout)
+        self.bottomLayout.addLayout(self.roofdormerLayout)
+        self.bottomLayout.addLayout(self.foundationLayout)
 
         self.topFrame.setLayout(self.topLayout)
         self.bottomFrame.setLayout(self.bottomLayout)
@@ -83,7 +148,9 @@ class AddProduct(QWidget):
         self.setLayout(self.mainLayout)
 
 
-
+    def funcAddBeam(self):
+        self.newBeam = vst_beam.AddBeam()
+        self.close()
 
 
 

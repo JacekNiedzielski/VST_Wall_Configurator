@@ -135,6 +135,16 @@ def toolbarstyle():
      """
 
 
+def productsButtons():
+     return """
+     QPushButton{
+     background-color: #07555F;
+     font-size: 10pt;
+     font-family: Arial;
+     font: Bold;
+     color: white;}
+     """
+
      
      
      
