@@ -14,7 +14,6 @@ class AddBeam(QWidget):
         self.setWindowTitle("Beam Definition")
         self.setWindowIcon(QIcon("icons/ico.ico"))
         self.setGeometry(450,150,500,550)
-        self.setFixedSize(self.size())
         self.setStyleSheet("background-color:white")
         self.UI()
         self.show()
@@ -28,8 +27,13 @@ class AddBeam(QWidget):
     def widgets(self):
         self.confirmReinforcementBtn = QPushButton("Confirm")
         self.confirmReinforcementBtn.clicked.connect(self.make_widgets)
+        self.confirmDiametersBtn = QPushButton("Confirm Diameters")
+        self.confirmDiametersBtn.clicked.connect(self.calculate_longitudinal_rebars)
         self.Cross_Section_IMG = QLabel()
-        self.Cross_Section_IMG.setPixmap(QPixmap("icons/icon.ico"))
+        beam_image = QPixmap("img/img3.jpg")
+        beam_image = beam_image.scaledToWidth(256)
+        beam_image = beam_image.scaledToHeight(256)
+        self.Cross_Section_IMG.setPixmap(beam_image)
         self.top_reinf_number = QComboBox(self)
         for number in range(2,11,1):
             self.top_reinf_number.addItem(str(number))
@@ -53,17 +57,17 @@ class AddBeam(QWidget):
 
         self.topLeftLayout.addWidget(self.Cross_Section_IMG)
         self.topLeftLayout.setAlignment(Qt.AlignCenter)
-        self.topRightLayout.addRow("Number of top reinforcement rebars: ", self.top_reinf_number)
+        self.topRightLayout.addRow("Please choose the number of top reinforcement rebars: ", self.top_reinf_number)
         self.topRightLayout.addRow("Stirrups: ", self.stirrups)
-        self.topRightLayout.addRow("Number of bottom reinforcement rebars: ", self.bottom_reinf_number)
+        self.topRightLayout.addRow("Please choose the number of bottom reinforcement rebars: ", self.bottom_reinf_number)
         self.topRightLayout.addRow("Confirm", self.confirmReinforcementBtn)
+        self.topRightLayout.addRow("Confirm Rebars", self.confirmDiametersBtn)
         self.topRightLayout.setAlignment(Qt.AlignCenter)
-
 
         try:
             self.topveryRightLayout.addLayout(self.topRebars)
             self.topveryRightLayout.addLayout(self.bottomRebars)
-
+            self.topveryRightLayout.setAlignment(Qt.AlignCenter)
         except:
             pass
 
@@ -90,38 +94,47 @@ class AddBeam(QWidget):
             self.bottomRebars = QHBoxLayout()
 
 
-            list_of_top_widgets = list()
-            list_of_bottom_widgets = list()
+            self.list_of_top_widgets = list()
+            self.list_of_bottom_widgets = list()
             number_of_top_widgets = int(self.top_reinf_number.currentText())
             number_of_bottom_widgets = int(self.bottom_reinf_number.currentText())
 
 
             for number in range(number_of_top_widgets):
-                print(number_of_top_widgets)
-                self.widget = QLineEdit()
+                self.widget = QLineEdit(self)
                 self.widget.setFixedSize(20, 20)
-                self.widget.setPlaceholderText("Enter diameter")
-                list_of_top_widgets.append(self.widget)
+                self.list_of_top_widgets.append(self.widget)
 
             for number in range(number_of_bottom_widgets):
-                print(number_of_bottom_widgets)
-                self.widget = QLineEdit()
+                self.widget = QLineEdit(self)
                 self.widget.setFixedSize(20, 20)
-                self.widget.setPlaceholderText("Enter diameter")
-                list_of_bottom_widgets.append(self.widget)
+                self.list_of_bottom_widgets.append(self.widget)
 
-
-            for widget in list_of_top_widgets:
+            for widget in self.list_of_top_widgets:
                 self.topRebars.addWidget(widget)
 
 
-            for widget in list_of_bottom_widgets:
+            for widget in self.list_of_bottom_widgets:
                 self.bottomRebars.addWidget(widget)
+
+
+            j = 1
+            while j > 0:
+                self.topRebars.addWidget(QLabel("Please enter diameters in mm"))
+                self.bottomRebars.addWidget(QLabel("Please enter diameters in mm"))
+                j = j - 1
+                self.topRebars.setAlignment(Qt.AlignCenter)
+                self.bottomRebars.setAlignment(Qt.AlignCenter)
+
+
 
             self.topveryRightLayout.addLayout(self.topRebars)
             self.topveryRightLayout.addLayout(self.bottomRebars)
-            list_of_top_widgets.clear()
-            list_of_bottom_widgets.clear()
+            self.topveryRightLayout.setAlignment(Qt.AlignTop)
+            self.topMainLayout.addLayout(self.topLeftLayout)
+            self.topMainLayout.addLayout(self.topRightLayout)
+            self.topMainLayout.addLayout(self.topveryRightLayout)
+            self.topMainLayout.setAlignment(Qt.AlignTop)
 
 
 
@@ -129,37 +142,75 @@ class AddBeam(QWidget):
             self.topRebars = QHBoxLayout()
             self.bottomRebars = QHBoxLayout()
 
-            list_of_top_widgets = list()
-            list_of_bottom_widgets = list()
+            self.list_of_top_widgets = list()
+            self.list_of_bottom_widgets = list()
             number_of_top_widgets = int(self.top_reinf_number.currentText())
             number_of_bottom_widgets = int(self.bottom_reinf_number.currentText())
 
             for number in range(number_of_top_widgets):
-                print(number_of_top_widgets)
-                self.widget = QLineEdit()
-                self.widget.setFixedSize(20, 20)
-                self.widget.setPlaceholderText("Enter diameter")
-                list_of_top_widgets.append(self.widget)
+                self.widget = QLineEdit(self)
+                self.widget.setFixedSize(25, 25)
+                self.list_of_top_widgets.append(self.widget)
 
             for number in range(number_of_bottom_widgets):
-                print(number_of_bottom_widgets)
-                self.widget = QLineEdit()
-                self.widget.setFixedSize(20,20)
-                self.widget.setPlaceholderText("Enter diameter")
-                list_of_bottom_widgets.append(self.widget)
+                self.widget = QLineEdit(self)
+                self.widget.setFixedSize(25, 25)
+                self.list_of_bottom_widgets.append(self.widget)
 
-            for widget in list_of_top_widgets:
+            for widget in self.list_of_top_widgets:
                 self.topRebars.addWidget(widget)
 
 
-            for widget in list_of_bottom_widgets:
+            for widget in self.list_of_bottom_widgets:
                 self.bottomRebars.addWidget(widget)
 
 
+            j = 1
+            while j > 0:
+                self.topRebars.addWidget(QLabel("Please enter diameters in mm"))
+                self.bottomRebars.addWidget(QLabel("Please enter diameters in mm"))
+                j = j - 1
+                self.topRebars.setAlignment(Qt.AlignCenter)
+                self.bottomRebars.setAlignment(Qt.AlignCenter)
+
             self.topveryRightLayout.addLayout(self.topRebars)
             self.topveryRightLayout.addLayout(self.bottomRebars)
-            list_of_top_widgets.clear()
-            list_of_bottom_widgets.clear()
+            self.topveryRightLayout.setAlignment(Qt.AlignTop)
+            self.topMainLayout.addLayout(self.topLeftLayout)
+            self.topMainLayout.addLayout(self.topRightLayout)
+            self.topMainLayout.addLayout(self.topveryRightLayout)
+            self.topMainLayout.setAlignment(Qt.AlignTop)
+
+        return(self.list_of_top_widgets, self.list_of_bottom_widgets)
+
+
+
+    def calculate_longitudinal_rebars(self):
+        topRebars = self.list_of_top_widgets
+        bottomRebars = self.list_of_bottom_widgets
+
+
+        for rebar in topRebars:
+            print("diameters of top rebars")
+            print(rebar.text())
+
+
+
+        for rebar in bottomRebars:
+            print("diameters of bottom rebars")
+            print(rebar.text())
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
