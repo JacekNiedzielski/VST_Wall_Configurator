@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import *
+import math
+from PIL import Image
 import sqlite3
 
 
@@ -25,12 +27,18 @@ class AddBeam(QWidget):
 
 
     def widgets(self):
-        self.confirmReinforcementBtn = QPushButton("Confirm")
+        global defaultImage
+        defaultImage = QPixmap("img/img1.jpg")
+        self.confirmReinforcementBtn = QPushButton("Confirm number of rebars")
         self.confirmReinforcementBtn.clicked.connect(self.make_widgets)
-        self.confirmDiametersBtn = QPushButton("Confirm Diameters")
-        self.confirmDiametersBtn.clicked.connect(self.calculate_longitudinal_rebars)
+        self.confirmDiametersBtn = QPushButton("Confirm diameters")
+        self.confirmDiametersBtn.clicked.connect(self.calculate_longitudinal_rebars_area)
+        self.choosePositionsTopBtn = QPushButton("Choose coordinates of top rebars")
+        self.choosePositionsTopBtn.clicked.connect(self.define_top_rebars_positions)
+        self.choosePositionsBottomBtn = QPushButton("Choose coordinates of bottom rebars")
+        self.choosePositionsBottomBtn.clicked.connect(self.define_bottom_rebars_positions)
         self.Cross_Section_IMG = QLabel()
-        beam_image = QPixmap("img/img3.jpg")
+        beam_image = defaultImage
         beam_image = beam_image.scaledToWidth(256)
         beam_image = beam_image.scaledToHeight(256)
         self.Cross_Section_IMG.setPixmap(beam_image)
@@ -50,24 +58,56 @@ class AddBeam(QWidget):
         self.topMainLayout = QHBoxLayout()
         self.topLeftLayout = QVBoxLayout()
 
-
-        self.topRightLayout = QFormLayout()
-        self.topveryRightLayout = QVBoxLayout()
-
-
         self.topLeftLayout.addWidget(self.Cross_Section_IMG)
         self.topLeftLayout.setAlignment(Qt.AlignCenter)
-        self.topRightLayout.addRow("Please choose the number of top reinforcement rebars: ", self.top_reinf_number)
-        self.topRightLayout.addRow("Stirrups: ", self.stirrups)
-        self.topRightLayout.addRow("Please choose the number of bottom reinforcement rebars: ", self.bottom_reinf_number)
-        self.topRightLayout.addRow("Confirm", self.confirmReinforcementBtn)
-        self.topRightLayout.addRow("Confirm Rebars", self.confirmDiametersBtn)
-        self.topRightLayout.setAlignment(Qt.AlignCenter)
+
+
+        self.topRightLayout = QGridLayout()
+        self.topveryRightLayout = QVBoxLayout()
+
+        top_reinf_number_Label = QLabel(self.tr("&Choose the number of top reinforcement rebars"))
+        top_reinf_number_Label.setBuddy(self.top_reinf_number)
+
+        bottom_number_Label = QLabel(self.tr("&Choose the number of bottom reinforcement rebars"))
+        bottom_number_Label.setBuddy(self.bottom_reinf_number)
+
+        confirm_Reinforcement_Label = QLabel(self.tr("&Confirm the number of rebars"))
+        confirm_Reinforcement_Label.setBuddy(self.confirmReinforcementBtn)
+
+        confirm_Diameter_Label = QLabel(self.tr("&Confirm chosen diameters"))
+        confirm_Diameter_Label.setBuddy(self.confirmDiametersBtn)
+
+        choose_PositionsTop_Label  = QLabel(self.tr("""&Choose positions of rebars
+staring from the very 
+top left and ending with
+the very bottom right"""))
+        choose_PositionsTop_Label.setBuddy(self.choosePositionsTopBtn)
+
+        choose_PositionsBottom_Label = QLabel(self.tr("""&Choose positions of rebars
+staring from the very 
+top left and ending with
+the very bottom right"""))
+        choose_PositionsBottom_Label.setBuddy(self.choosePositionsBottomBtn)
+
+
+
+
+        self.topRightLayout.addWidget(top_reinf_number_Label, 0,0)
+        self.topRightLayout.addWidget(self.top_reinf_number, 0,1)
+        self.topRightLayout.addWidget(bottom_number_Label, 1, 0)
+        self.topRightLayout.addWidget(self.bottom_reinf_number, 1, 1)
+        self.topRightLayout.addWidget(self.confirmReinforcementBtn, 2, 0)
+        self.topRightLayout.addWidget(self.confirmDiametersBtn, 2, 1)
+        self.topRightLayout.addWidget(choose_PositionsTop_Label, 4, 0)
+        self.topRightLayout.addWidget(self.choosePositionsTopBtn,4,1)
+        self.topRightLayout.addWidget(choose_PositionsBottom_Label, 5, 0)
+        self.topRightLayout.addWidget(self.choosePositionsBottomBtn,5,1)
+
 
         try:
-            self.topveryRightLayout.addLayout(self.topRebars)
-            self.topveryRightLayout.addLayout(self.bottomRebars)
-            self.topveryRightLayout.setAlignment(Qt.AlignCenter)
+            self.topRightLayout.addLayout(self.topRebars, 0, 2)
+            self.topRightLayout.addLayout(self.bottomRebars, 1, 2)
+
         except:
             pass
 
@@ -126,16 +166,8 @@ class AddBeam(QWidget):
                 self.topRebars.setAlignment(Qt.AlignCenter)
                 self.bottomRebars.setAlignment(Qt.AlignCenter)
 
-
-
-            self.topveryRightLayout.addLayout(self.topRebars)
-            self.topveryRightLayout.addLayout(self.bottomRebars)
-            self.topveryRightLayout.setAlignment(Qt.AlignTop)
-            self.topMainLayout.addLayout(self.topLeftLayout)
-            self.topMainLayout.addLayout(self.topRightLayout)
-            self.topMainLayout.addLayout(self.topveryRightLayout)
-            self.topMainLayout.setAlignment(Qt.AlignTop)
-
+            self.topRightLayout.addLayout(self.topRebars, 0, 2)
+            self.topRightLayout.addLayout(self.bottomRebars, 1, 2)
 
 
         except:
@@ -173,42 +205,98 @@ class AddBeam(QWidget):
                 self.topRebars.setAlignment(Qt.AlignCenter)
                 self.bottomRebars.setAlignment(Qt.AlignCenter)
 
-            self.topveryRightLayout.addLayout(self.topRebars)
-            self.topveryRightLayout.addLayout(self.bottomRebars)
-            self.topveryRightLayout.setAlignment(Qt.AlignTop)
-            self.topMainLayout.addLayout(self.topLeftLayout)
-            self.topMainLayout.addLayout(self.topRightLayout)
-            self.topMainLayout.addLayout(self.topveryRightLayout)
-            self.topMainLayout.setAlignment(Qt.AlignTop)
+            self.topRightLayout.addLayout(self.topRebars, 0, 2)
+            self.topRightLayout.addLayout(self.bottomRebars, 1, 2)
 
         return(self.list_of_top_widgets, self.list_of_bottom_widgets)
 
 
 
-    def calculate_longitudinal_rebars(self):
-        topRebars = self.list_of_top_widgets
-        bottomRebars = self.list_of_bottom_widgets
+    def calculate_longitudinal_rebars_area(self):
+
+        try:
+            for index, rebar in enumerate(self.list_of_top_widgets):
+                self.list_of_top_widgets[index] = int(rebar.text())
+            self.topReinforcementAreas = [((x / 1000) ** 2 / 4) * math.pi for x in self.list_of_top_widgets]
+            print(self.topReinforcementAreas)
+
+            for index, rebar in enumerate(self.list_of_bottom_widgets):
+                self.list_of_bottom_widgets[index] = int(rebar.text())
+            self.bottomReinforcementAreas = [((x / 1000) ** 2 / 4) * math.pi for x in self.list_of_bottom_widgets]
+            print(self.topReinforcementAreas)
+
+        except:
+            QMessageBox.information(self, "Info", "Entries cannot be empty")
+
+    def define_top_rebars_positions(self):
+        beam_image = QPixmap("img/Coordinaten.jpg")
+        beam_image = beam_image.scaledToWidth(256)
+        beam_image = beam_image.scaledToHeight(256)
+        self.Cross_Section_IMG.setPixmap(beam_image)
 
 
-        for rebar in topRebars:
-            print("diameters of top rebars")
-            print(rebar.text())
+        try:
+            for i in reversed(range(self.rebars_top_Layout.count())):
+                self.rebars_top_Layout.itemAt(i).widget().setParent(None)
+
+            self.rebars_top_Layout = QGridLayout()
 
 
 
-        for rebar in bottomRebars:
-            print("diameters of bottom rebars")
-            print(rebar.text())
+            for i, rebar in enumerate(self.list_of_top_widgets):
+                self.rebars_top_Layout.addWidget(QLabel("X Position"), i, 0)
+                self.rebars_top_Layout.addWidget(QLineEdit(), i, 1)
+                self.rebars_top_Layout.addWidget(QLabel("Y Position"), i, 2)
+                self.rebars_top_Layout.addWidget(QLineEdit(), i, 3)
+                self.topRightLayout.addLayout(self.rebars_top_Layout, 4+i,2)
+
+            self.topMainLayout.setAlignment(Qt.AlignTop)
 
 
+        except:
+            self.rebars_top_Layout = QGridLayout()
+
+            for i, rebar in enumerate(self.list_of_top_widgets):
+                self.rebars_top_Layout.addWidget(QLabel("X Position"), i, 0)
+                self.rebars_top_Layout.addWidget(QLineEdit(), i, 1)
+                self.rebars_top_Layout.addWidget(QLabel("Y Position"), i, 2)
+                self.rebars_top_Layout.addWidget(QLineEdit(), i, 3)
+                self.topRightLayout.addLayout(self.rebars_top_Layout, 4+i, 2)
+
+            self.topMainLayout.setAlignment(Qt.AlignTop)
 
 
+    def define_bottom_rebars_positions(self):
+
+        try:
+            for i in reversed(range(self.rebars_bottom_Layout.count())):
+                self.rebars_bottom_Layout.itemAt(i).widget().setParent(None)
+
+            self.rebars_bottom_Layout = QGridLayout()
 
 
+            for i, rebar in enumerate(self.list_of_bottom_widgets):
+                self.rebars_bottom_Layout.addWidget(QLabel("X Position"), i, 0)
+                self.rebars_bottom_Layout.addWidget(QLineEdit(), i, 1)
+                self.rebars_bottom_Layout.addWidget(QLabel("Y Position"), i, 2)
+                self.rebars_bottom_Layout.addWidget(QLineEdit(), i, 3)
+                print(self.rebars_top_Layout.rowCount())
+                self.topRightLayout.addLayout(self.rebars_bottom_Layout, 5+i,2)
 
+            self.topMainLayout.setAlignment(Qt.AlignTop)
 
+        except:
+            self.rebars_bottom_Layout = QGridLayout()
 
+            for i, rebar in enumerate(self.list_of_bottom_widgets):
+                self.rebars_bottom_Layout.addWidget(QLabel("X Position"), i, 0)
+                self.rebars_bottom_Layout.addWidget(QLineEdit(), i, 1)
+                self.rebars_bottom_Layout.addWidget(QLabel("Y Position"), i, 2)
+                self.rebars_bottom_Layout.addWidget(QLineEdit(), i, 3)
+                print(self.rebars_top_Layout.rowCount())
+                self.topRightLayout.addLayout(self.rebars_bottom_Layout, 5+i, 2)
 
+            self.topMainLayout.setAlignment(Qt.AlignTop)
 
 
 
