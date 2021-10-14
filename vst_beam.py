@@ -217,15 +217,21 @@ class AddBeam(QWidget):
     def calculate_longitudinal_rebars_area(self):
 
         try:
+            self.top_reinforcements = []
+            self.bottom_reinforcements = []
+
             for index, rebar in enumerate(self.list_of_top_widgets):
-                self.list_of_top_widgets[index] = int(rebar.text())
-            self.topReinforcementAreas = [((x / 1000) ** 2 / 4) * math.pi for x in self.list_of_top_widgets]
+                self.top_reinforcements.append(int(rebar.text()))
+            self.topReinforcementAreas = [((x / 1000) ** 2 / 4) * math.pi for x in self.top_reinforcements]
             print(self.topReinforcementAreas)
+            self.top_reinforcements.clear()
+
 
             for index, rebar in enumerate(self.list_of_bottom_widgets):
-                self.list_of_bottom_widgets[index] = int(rebar.text())
-            self.bottomReinforcementAreas = [((x / 1000) ** 2 / 4) * math.pi for x in self.list_of_bottom_widgets]
-            print(self.topReinforcementAreas)
+                self.bottom_reinforcements.append(int(rebar.text()))
+            self.bottomReinforcementAreas = [((x / 1000) ** 2 / 4) * math.pi for x in self.bottom_reinforcements]
+            print(self.bottomReinforcementAreas)
+            self.bottom_reinforcements.clear()
 
         except:
             QMessageBox.information(self, "Info", "Entries cannot be empty")
@@ -318,8 +324,53 @@ the very top left"""))
             self.topMainLayout.setAlignment(Qt.AlignTop)
 
     def save_and_getInfo(self):
-        self.beamEntry = beam_insertion_intoDataBase.Insertion()
-        self.close()
+        self.longitudinal_rebars = dict()
+        background_img = QPixmap("img/img1.jpg")
+        background_img = background_img.scaledToWidth(256)
+        background_img = background_img.scaledToHeight(256)
+        self.Cross_Section_IMG.setPixmap(background_img)
+        ################ TOP #########################
+        i = 0
+        counter = 0
+        while i <= self.rebars_top_Layout.count()-3:
+            self.longitudinal_rebars["top"+"_"+str(counter+1)+"_"+"rebar"] = (self.rebars_top_Layout.itemAt(i+1).widget().text(),
+                                                                            self.rebars_top_Layout.itemAt(i+3).widget().text(),
+                                                                            self.topRebars.itemAt(counter).widget().text())
+            i += 4
+            counter += 1
+        ################ BOTTOM #########################
+        i = 0
+        counter = 0
+        while i <= self.rebars_bottom_Layout.count()-3:
+            self.longitudinal_rebars["bottom"+"_"+str(counter+1)+"_"+"rebar"] = (self.rebars_bottom_Layout.itemAt(i+1).widget().text(),
+                                                                               self.rebars_bottom_Layout.itemAt(i+3).widget().text(),
+                                                                               self.bottomRebars.itemAt(counter).widget().text())
+            i += 4
+            counter += 1
+
+
+        for rebar in self.longitudinal_rebars:
+
+            img = Image.open("img/Rebars_Icons/rebar_"+self.longitudinal_rebars[rebar][2]+".png")
+            print("2")
+            background_img.paste(img, box = (int(self.longitudinal_rebars[rebar][0]), int(self.longitudinal_rebars[rebar][1])))
+
+        background_img.save("img/img4.jpg")
+        background_img = QPixmap("img/img4.jpg")
+        background_img = background_img.scaledToWidth(256)
+        background_img = background_img.scaledToHeight(256)
+        self.Cross_Section_IMG.setPixmap(background_img)
+
+
+
+        print(self.longitudinal_rebars)
+
+
+        #self.beamEntry = beam_insertion_intoDataBase.Insertion()
+        #self.close()
+
+
+
 
 
 

@@ -10,6 +10,8 @@ import sqlite3
 
 
 
+
+
 class Insertion(QWidget):
     def __init__(self):
         super().__init__()
