@@ -15,7 +15,7 @@ class AddBeam(QWidget):
         super().__init__()
         self.setWindowTitle("Beam Definition")
         self.setWindowIcon(QIcon("icons/ico.ico"))
-        self.setGeometry(450,150,500,550)
+        #self.setGeometry(450,150,500,550)
         self.setStyleSheet("background-color:white")
         self.UI()
         self.show()
@@ -38,6 +38,23 @@ class AddBeam(QWidget):
         self.choosePositionsTopBtn.clicked.connect(self.define_top_rebars_positions)
         self.choosePositionsBottomBtn = QPushButton("Choose coordinates of bottom rebars")
         self.choosePositionsBottomBtn.clicked.connect(self.define_bottom_rebars_positions)
+
+        #Main dimensions of the beam
+        self.beam_widthLabel = QLabel("Total widht of the beam (including formwork)")
+        #self.beam_widthLabel.setContentsMargins(0,0,0,0)
+        self.beam_widthEntry = QLineEdit()
+        self.beam_widthEntry.setFixedWidth(180)
+        self.beam_widthEntry.setPlaceholderText("Please enter the width in mm")
+        #self.beam_widthEntry.setContentsMargins(0,0,0,0)
+        self.beam_heightLabel = QLabel("Total heigth of the beam (including formwork)")
+        #self.beam_heightLabel.setContentsMargins(0,0,0,0)
+        self.beam_heightEntry = QLineEdit()
+        self.beam_heightEntry.setFixedWidth(180)
+        self.beam_heightEntry.setPlaceholderText("Please enter the height in mm")
+        #self.beam_heightEntry.setContentsMargins(0,0,0,0)
+
+
+
         self.Cross_Section_IMG = QLabel()
         beam_image = defaultImage
         beam_image = beam_image.scaledToWidth(256)
@@ -53,35 +70,16 @@ class AddBeam(QWidget):
         for number in range(2,11,1):
             self.bottom_reinf_number.addItem(str(number))
 
-        self.saveBtn = QPushButton("Save into Database and Show Info")
-        self.saveBtn.clicked.connect(self.save_and_getInfo)
+        self.top_reinf_number_Label = QLabel(self.tr("&Choose the number of top reinforcement rebars"))
+        self.top_reinf_number_Label.setBuddy(self.top_reinf_number)
+        self.bottom_number_Label = QLabel(self.tr("&Choose the number of bottom reinforcement rebars"))
+        self.bottom_number_Label.setBuddy(self.bottom_reinf_number)
 
+        self.confirm_Reinforcement_Label = QLabel(self.tr("&Confirm the number of rebars"))
+        self.confirm_Reinforcement_Label.setBuddy(self.confirmReinforcementBtn)
 
-    def layouts(self):
-        self.mainLayout = QVBoxLayout()
-
-        self.bottomMainLayout = QHBoxLayout()
-        self.topMainLayout = QHBoxLayout()
-
-        self.bottomMainLayout.addWidget(self.saveBtn)
-
-        self.topLeftLayout = QVBoxLayout()
-        self.topLeftLayout.addWidget(self.Cross_Section_IMG)
-        self.topLeftLayout.setAlignment(Qt.AlignCenter)
-        self.topRightLayout = QGridLayout()
-        self.topveryRightLayout = QVBoxLayout()
-
-        top_reinf_number_Label = QLabel(self.tr("&Choose the number of top reinforcement rebars"))
-        top_reinf_number_Label.setBuddy(self.top_reinf_number)
-
-        bottom_number_Label = QLabel(self.tr("&Choose the number of bottom reinforcement rebars"))
-        bottom_number_Label.setBuddy(self.bottom_reinf_number)
-
-        confirm_Reinforcement_Label = QLabel(self.tr("&Confirm the number of rebars"))
-        confirm_Reinforcement_Label.setBuddy(self.confirmReinforcementBtn)
-
-        confirm_Diameter_Label = QLabel(self.tr("&Confirm chosen diameters"))
-        confirm_Diameter_Label.setBuddy(self.confirmDiametersBtn)
+        self.confirm_Diameter_Label = QLabel(self.tr("&Confirm chosen diameters"))
+        self.confirm_Diameter_Label.setBuddy(self.confirmDiametersBtn)
 
         self.choose_PositionsTop_Label  = QLabel(self.tr(" "))
         self.choose_PositionsTop_Label.setBuddy(self.choosePositionsTopBtn)
@@ -89,9 +87,30 @@ class AddBeam(QWidget):
         self.choose_PositionsBottom_Label = QLabel(self.tr(" "))
         self.choose_PositionsBottom_Label.setBuddy(self.choosePositionsBottomBtn)
 
-        self.topRightLayout.addWidget(top_reinf_number_Label, 0,0)
+
+
+        self.saveBtn = QPushButton("Save into Database and Show Info")
+        self.saveBtn.clicked.connect(self.save_and_getInfo)
+
+
+    def layouts(self):
+        self.mainLayout = QVBoxLayout()
+
+        self.topMainLayout = QHBoxLayout()
+        self.bottomMainLayout = QHBoxLayout()
+
+        self.bottomMainLayout.addWidget(self.saveBtn)
+
+        self.topLeftLayout = QVBoxLayout()
+        self.topLeftLayout.addWidget(self.Cross_Section_IMG)
+        self.topLeftLayout.setAlignment(Qt.AlignCenter)
+
+        self.topRightLayout = QGridLayout()
+        self.topveryRightLayout = QVBoxLayout()
+
+        self.topRightLayout.addWidget(self.top_reinf_number_Label, 0,0)
         self.topRightLayout.addWidget(self.top_reinf_number, 0,1)
-        self.topRightLayout.addWidget(bottom_number_Label, 1, 0)
+        self.topRightLayout.addWidget(self.bottom_number_Label, 1, 0)
         self.topRightLayout.addWidget(self.bottom_reinf_number, 1, 1)
         self.topRightLayout.addWidget(self.confirmReinforcementBtn, 2, 0)
         self.topRightLayout.addWidget(self.confirmDiametersBtn, 2, 1)
@@ -102,6 +121,23 @@ class AddBeam(QWidget):
         self.topRightLayout.addWidget(self.spacingWidget, 5,2)
         self.topRightLayout.addWidget(self.choose_PositionsBottom_Label, 6, 0)
         self.topRightLayout.addWidget(self.choosePositionsBottomBtn,6,1)
+
+        self.verytopMainLayout = QVBoxLayout()
+        #self.verytopMainLayout.setSpacing(5)
+        self.verytopMainLayout.setAlignment(Qt.AlignBottom)
+        #self.verytopMainLayout.addStretch(1)
+        self.verytopMainLayout.geometry()
+
+        self.verytopMainLayout.addWidget(self.beam_widthLabel)
+        #self.verytopMainLayout.addStretch(1)
+        self.verytopMainLayout.addWidget(self.beam_widthEntry)
+        #self.verytopMainLayout.addStretch(1)
+        self.verytopMainLayout.addWidget(self.beam_heightLabel)
+        #self.verytopMainLayout.addStretch(1)
+        self.verytopMainLayout.addWidget(self.beam_heightEntry)
+
+
+
 
         try:
             self.topRightLayout.addLayout(self.topRebars, 0, 2)
@@ -116,6 +152,7 @@ class AddBeam(QWidget):
         self.topMainLayout.addLayout(self.topveryRightLayout)
         self.topMainLayout.setAlignment(Qt.AlignTop)
 
+        self.mainLayout.addLayout(self.verytopMainLayout)
         self.mainLayout.addLayout(self.topMainLayout)
         self.mainLayout.addLayout(self.bottomMainLayout)
 
@@ -329,6 +366,7 @@ the very top left"""))
         background_img = background_img.scaledToWidth(256)
         background_img = background_img.scaledToHeight(256)
         self.Cross_Section_IMG.setPixmap(background_img)
+        background_img = Image.open("img/img1.jpg")
         ################ TOP #########################
         i = 0
         counter = 0
@@ -352,7 +390,7 @@ the very top left"""))
         for rebar in self.longitudinal_rebars:
 
             img = Image.open("img/Rebars_Icons/rebar_"+self.longitudinal_rebars[rebar][2]+".png")
-            print("2")
+
             background_img.paste(img, box = (int(self.longitudinal_rebars[rebar][0]), int(self.longitudinal_rebars[rebar][1])))
 
         background_img.save("img/img4.jpg")
