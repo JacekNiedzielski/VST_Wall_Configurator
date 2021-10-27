@@ -5,7 +5,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import *
 import math
-from PIL import Image
+from PIL import Image, ImageDraw
 import sqlite3
 
 
@@ -15,7 +15,7 @@ from Design_acc_EC2.RC import Concrete, Reinforcing_Steel
 """
 Defining concrete and reinforcement classes (global variables)
 """
-
+#zmiennaX = 3
 #Dictionary of Concrete objects
 concretes= {}
 
@@ -79,11 +79,14 @@ class AddBeam(QWidget):
         self.beam_widthEntry = QLineEdit()
         self.beam_widthEntry.setFixedWidth(180)
         self.beam_widthEntry.setPlaceholderText("Please enter the width in mm")
-        self.beam_heightLabel = QLabel("Total heigth of the beam (including formwork)")
+        self.beam_heightLabel = QLabel("Total height of the beam (including formwork)")
         self.beam_heightEntry = QLineEdit()
         self.beam_heightEntry.setFixedWidth(180)
         self.beam_heightEntry.setPlaceholderText("Please enter the height in mm")
-
+        self.beam_lengthLabel = QLabel("Total length of the currently defined section")
+        self.beam_lengthEntry = QLineEdit()
+        self.beam_lengthEntry.setFixedWidth(180)
+        self.beam_lengthEntry.setPlaceholderText("Please enter the length in mm")
 
 
         self.concrete_class_Label = QLabel("Concrete Class")
@@ -175,13 +178,14 @@ class AddBeam(QWidget):
         self.verytopleftLayout.addWidget(self.beam_widthEntry)
         self.verytopleftLayout.addWidget(self.beam_heightLabel)
         self.verytopleftLayout.addWidget(self.beam_heightEntry)
+        self.verytopleftLayout.addWidget(self.beam_lengthLabel)
+        self.verytopleftLayout.addWidget(self.beam_lengthEntry)
 
         self.verytopmiddleLayout.addWidget(self.concrete_class_Label)
         self.verytopmiddleLayout.addWidget(self.concrete_class_comboBox)
         self.verytopmiddleLayout.addWidget(self.reinforcement_class_Label)
         self.verytopmiddleLayout.addWidget(self.reinforcement_class_comboBox)
-
-        self.verytoprightLayout.addWidget(self.confirmMainDataBtn)
+        self.verytopmiddleLayout.addWidget(self.confirmMainDataBtn)
 
         try:
             self.topRightLayout.addLayout(self.topRebars, 0, 2)
@@ -207,15 +211,19 @@ class AddBeam(QWidget):
         self.setLayout(self.mainLayout)
 
     def confirmEssentialCharacteristics(self):
-        #self.beam_width = int(self.beam_widthEntry.text())
-        #self.beam_height = int(self.beam_heightEntry.text())
+
+        global concretes
+        global reinforcements
+        self.beam_width = int(self.beam_widthEntry.text())
+        self.beam_height = int(self.beam_heightEntry.text())
+        self.beam_length = int(self.beam_lengthEntry.text())
+        self.given_concrete = concretes[self.concrete_class_comboBox.currentText()]
+        self.given_reinforcement = reinforcements[self.reinforcement_class_comboBox.currentText()]
+
+
         #self.beam_image = self.beam_image.scaledToWidth(256*self.beam_width/400)
         #self.beam_image = self.beam_image.scaledToHeight(256*self.beam_height/800)
-        self.Cross_Section_IMG.setPixmap(self.beam_image)
-
-
-
-
+        #self.Cross_Section_IMG.setPixmap(self.beam_image)
 
 
 
@@ -423,6 +431,7 @@ the very top left"""))
             self.topMainLayout.setAlignment(Qt.AlignTop)
 
     def save_and_getInfo(self):
+
         global concretes
         global reinforcements
 
@@ -466,25 +475,20 @@ the very top left"""))
 
         print(self.longitudinal_rebars)
 
-        global concretes
-        global reinforcements
-
-        self.given_concrete = concretes[self.concrete_class_comboBox.currentText()]
-        self.given_reinforcement = reinforcements[self.reinforcement_class_comboBox.currentText()]
-
-
-        print(self.given_concrete.name)
-        print(self.given_reinforcement.name)
-
-
+        self.beamEntry = beam_insertion_intoDataBase.Insertion(
+            length = self.beam_length,
+            width = self.beam_width,
+            height = self.beam_height,
+            concrete = self.given_concrete,
+            reinforcement = self.given_reinforcement,
+            longitudinal_rebars = self.longitudinal_rebars
+            )
+        self.close()
 
 
 
 
 
-
-        #self.beamEntry = beam_insertion_intoDataBase.Insertion()
-        #self.close()
 
 
 
