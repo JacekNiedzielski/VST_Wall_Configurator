@@ -15,9 +15,9 @@ class Insertion(QWidget):
         """
         General attributes to be used within the window:
         """
-        self.length = length / 1000                         #becuase we want it in m
-        self.width = width / 1000                           #becuase we want it in m
-        self.height = height / 1000                         #becuase we want it in m
+        self.length = length / 1000                         #because we want it in m
+        self.width = width / 1000                           #because we want it in m
+        self.height = height / 1000                         #because we want it in m
         self.concrete = concrete
         self.reinforcement = reinforcement
         self.longitudinal_rebars = longitudinal_rebars
@@ -59,12 +59,33 @@ class Insertion(QWidget):
             diameter = int(self.longitudinal_rebars[key][2]) / 1000  #so that we have them in meters
             mass = math.pi * diameter**2/4 * self.length * self.ro_reinforcement
             self.mass_reinforcement += mass
-        self.reinforcement_mass_Label = QLabel("Reinforcement mass makes {}".format(self.mass_reinforcement))
+        self.reinforcement_mass_Label = QLabel("Reinforcement mass makes {} kg".format(self.mass_reinforcement))
 
-        self.im = Image.new('RGBA', (int(self.width*1000), int(self.height*1000)), "white")
+
+        scale = 500
+        self.im = Image.new('RGBA', (int(self.width*scale+1), int(self.height*scale+1)), "white")
+
         draw = ImageDraw.Draw(self.im)
-        print("2")
-        draw.line([(0,0), (0, self.height*1000-1), (self.board_thickness*1000, self.height*1000-1), (self.board_thickness*1000,0), (0, 0)], fill="black")
+
+        #Drawing the cross section
+        draw.rectangle((0, 0, self.board_thickness*scale, self.height*scale),
+                       fill="green", outline="black")
+        draw.rectangle((self.width*scale-self.board_thickness*scale, 0, self.width*scale, self.height*scale),
+                       fill="green", outline="black")
+        draw.rectangle((self.board_thickness*scale, 0, self.width*scale-self.board_thickness*scale, self.height*scale),
+                       fill="grey", outline="black")
+        draw.rectangle((self.board_thickness*scale, self.height*scale-self.board_thickness*scale,
+                        self.width*scale-self.board_thickness*scale, self.height*scale), fill="green", outline="black")
+
+        #Drawing the reinforcement
+        for key in self.longitudinal_rebars:
+            initial_distanceX = int(self.longitudinal_rebars[key][0])/1000*scale
+            initial_distanceY = int(self.longitudinal_rebars[key][1])/1000*scale
+            draw.ellipse((initial_distanceX, initial_distanceY,
+                          int(self.longitudinal_rebars[key][2])/1000*scale,
+                          int(self.longitudinal_rebars[key][2])/1000*scale), fill="red", outline="black" )
+
+
         self.im.save("image.png")
 
         self.image = QPixmap("image.png")

@@ -22,6 +22,9 @@ concretes= {}
 #Dictionary of Reinforcing_Steel objects
 reinforcements = {}
 
+#Board thickness
+board_thickness = 24
+
 #Filling the dictionary of Concrete objects#########
 def define_concrete(strength_class, gamma=1.5, α_ccpl=1, α_ctpl=1, η=1, ultimate_strain = 3.5):
     concrete = Concrete(strength_class=strength_class,
@@ -224,10 +227,6 @@ class AddBeam(QWidget):
         #self.beam_image = self.beam_image.scaledToWidth(256*self.beam_width/400)
         #self.beam_image = self.beam_image.scaledToHeight(256*self.beam_height/800)
         #self.Cross_Section_IMG.setPixmap(self.beam_image)
-
-
-
-
 
 
     def make_widgets(self):
@@ -434,6 +433,7 @@ the very top left"""))
 
         global concretes
         global reinforcements
+        global board_thickness
 
         self.longitudinal_rebars = dict()
         background_img = QPixmap("img/img1.jpg")
@@ -445,18 +445,20 @@ the very top left"""))
         i = 0
         counter = 0
         while i <= self.rebars_top_Layout.count()-3:
-            self.longitudinal_rebars["top"+"_"+str(counter+1)+"_"+"rebar"] = (self.rebars_top_Layout.itemAt(i+1).widget().text(),
-                                                                            self.rebars_top_Layout.itemAt(i+3).widget().text(),
-                                                                            self.topRebars.itemAt(counter).widget().text())
+            self.longitudinal_rebars["top"+"_"+str(counter+1)+"_"+"rebar"] = (int(self.rebars_top_Layout.itemAt(i+1).widget().text())+
+                                                                              board_thickness+int(self.topRebars.itemAt(counter).widget().text())/2,
+                                                                              self.rebars_top_Layout.itemAt(i+3).widget().text(),
+                                                                              self.topRebars.itemAt(counter).widget().text())
             i += 4
             counter += 1
         ################ BOTTOM #########################
         i = 0
         counter = 0
         while i <= self.rebars_bottom_Layout.count()-3:
-            self.longitudinal_rebars["bottom"+"_"+str(counter+1)+"_"+"rebar"] = (self.rebars_bottom_Layout.itemAt(i+1).widget().text(),
-                                                                               self.rebars_bottom_Layout.itemAt(i+3).widget().text(),
-                                                                               self.bottomRebars.itemAt(counter).widget().text())
+            self.longitudinal_rebars["bottom"+"_"+str(counter+1)+"_"+"rebar"] = (int(self.rebars_bottom_Layout.itemAt(i+1).widget().text())+
+                                                                                 board_thickness+int(self.bottomRebars.itemAt(counter).widget().text())/2,
+                                                                                 self.rebars_bottom_Layout.itemAt(i+3).widget().text(),
+                                                                                 self.bottomRebars.itemAt(counter).widget().text())
             i += 4
             counter += 1
 
