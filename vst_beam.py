@@ -445,8 +445,7 @@ the very top left"""))
         i = 0
         counter = 0
         while i <= self.rebars_top_Layout.count()-3:
-            self.longitudinal_rebars["top"+"_"+str(counter+1)+"_"+"rebar"] = (int(self.rebars_top_Layout.itemAt(i+1).widget().text())+
-                                                                              board_thickness+int(self.topRebars.itemAt(counter).widget().text())/2,
+            self.longitudinal_rebars["top"+"_"+str(counter+1)+"_"+"rebar"] = (int(self.rebars_top_Layout.itemAt(i+1).widget().text())+board_thickness,
                                                                               self.rebars_top_Layout.itemAt(i+3).widget().text(),
                                                                               self.topRebars.itemAt(counter).widget().text())
             i += 4
@@ -455,8 +454,7 @@ the very top left"""))
         i = 0
         counter = 0
         while i <= self.rebars_bottom_Layout.count()-3:
-            self.longitudinal_rebars["bottom"+"_"+str(counter+1)+"_"+"rebar"] = (int(self.rebars_bottom_Layout.itemAt(i+1).widget().text())+
-                                                                                 board_thickness+int(self.bottomRebars.itemAt(counter).widget().text())/2,
+            self.longitudinal_rebars["bottom"+"_"+str(counter+1)+"_"+"rebar"] = (int(self.rebars_bottom_Layout.itemAt(i+1).widget().text())+board_thickness,
                                                                                  self.rebars_bottom_Layout.itemAt(i+3).widget().text(),
                                                                                  self.bottomRebars.itemAt(counter).widget().text())
             i += 4

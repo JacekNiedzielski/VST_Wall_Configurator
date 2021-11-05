@@ -79,11 +79,13 @@ class Insertion(QWidget):
 
         #Drawing the reinforcement
         for key in self.longitudinal_rebars:
-            initial_distanceX = int(self.longitudinal_rebars[key][0])/1000*scale
-            initial_distanceY = int(self.longitudinal_rebars[key][1])/1000*scale
-            draw.ellipse((initial_distanceX, initial_distanceY,
-                          int(self.longitudinal_rebars[key][2])/1000*scale,
-                          int(self.longitudinal_rebars[key][2])/1000*scale), fill="red", outline="black" )
+            initial_distanceX = int(self.longitudinal_rebars[key][0])/1000*scale - (int(self.longitudinal_rebars[key][2])/1000*scale)/2
+            initial_distanceY = int(self.longitudinal_rebars[key][1])/1000*scale - (int(self.longitudinal_rebars[key][2])/1000*scale)/2
+            draw.ellipse((initial_distanceX,
+                          initial_distanceY,
+                          initial_distanceX+int(self.longitudinal_rebars[key][2])/1000*scale,
+                          initial_distanceY+int(self.longitudinal_rebars[key][2])/1000*scale), fill="red", outline="black" )
+
 
 
         self.im.save("image.png")
